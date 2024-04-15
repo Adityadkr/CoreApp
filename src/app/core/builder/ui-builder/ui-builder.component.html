@@ -1,0 +1,87 @@
+<div class="container-fluid" style="height: 100vh;">
+    <div class="row h-100">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 bg-light">
+            <div class="p-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item" draggable="true" (dragstart)="onDragStart('button')">
+                        <a class="nav-link active" href="#">Button</a>
+                    </li>
+                    <li class="nav-item" draggable="true" (dragstart)="onDragStart('h1')">
+                        <a class="nav-link active" href="#">h1</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+            <h2>{{ pageData.heading }}</h2>
+            <div class="row" *ngFor="let index of [].constructor(3); let i = index">
+                <div class="col-{{ colSize }} border p-2 drop-target" id="col{{ i }}{{ j }}"
+                    *ngFor="let index of [].constructor(12 / colSize); let j = index" (dragover)="onDragOver($event)"
+                    (drop)="onDrop($event)">
+                    Drop Here
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Element Settings</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+                    role="tab" aria-controls="home" aria-selected="true">General</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
+                    role="tab" aria-controls="profile" aria-selected="false">Events</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button"
+                    role="tab" aria-controls="contact" aria-selected="false">Style</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="container">
+                    <form [formGroup]="frmElementSettings.get('general')">
+                        <div class="form-group">
+                            <label>Text</label>
+                            <input type="text" class="form-control" formControlName="text">
+                        </div>
+                        <div class="form-group">
+                            <label>Id</label>
+                            <input type="text" class="form-control"  formControlName="id">
+                        </div>
+                        <!-- <div class="row mt-3 pull-right">
+                            <button class="col-3 btn btn-danger mx-2">Clear</button>
+                            <button class="col-3 btn btn-primary" (click)="save('general')">Save</button>
+                        </div> -->
+                    </form>
+                </div>
+
+
+
+            </div>
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <form [formGroup]="frmElementSettings.get('event')"></form>
+            </div>
+            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                <form [formGroup]="frmElementSettings.get('style')"></form>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="saveElement()">Save</button>
+    </div>
+</ng-template>

@@ -1,0 +1,26 @@
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation" *ngFor="let tab of data.tabs;let i = index"  >
+        <button class="nav-link" [class.active]="tab.id === activeTab" (click)="activeTab = tab.id" [disabled]="tabClick(i)"
+            [id]="tab.id + '-tab'" data-bs-toggle="tab" [data-bs-target]="'#' + tab.id" type="button" role="tab"
+            [aria-controls]="tab.id" [aria-selected]="tab.id === activeTab">
+            {{ tab.label }}
+
+        </button>
+    </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show" [class.active]="tab.id === activeTab" *ngFor="let tab of data.tabs" [id]="tab.id"
+        role="tabpanel" [aria-labelledby]="tab.id + '-tab'">
+        <div class="contai1ner">
+            <!-- {{ tab.content.title }} -->
+            <app-form  #childForm [id]="tab.id" [columns]="3" [formTemplate]="tab.content.form"  [isStepForm]="true" [data]="patchData" ></app-form>
+        </div>
+        <div class="mt-3">
+            <button class="btn btn-primary me-2" *ngIf="checkIfFirstTab(tab.id)"
+                (click)="previousTab()">Previous</button>
+            <button class="btn btn-primary" (click)="nextTab()">Next</button>
+        </div>
+    </div>
+</div>
+<hr>
+<!-- <app-form-array [fields]="fields"></app-form-array> -->

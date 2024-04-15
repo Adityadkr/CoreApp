@@ -1,0 +1,206 @@
+<div class="container">
+    <h2>Module Form</h2>
+    <form [formGroup]="moduleForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="moduleName">Module Name:</label>
+            <input type="text" id="moduleName" class="form-control" formControlName="moduleName">
+            <div *ngIf="moduleForm.get('moduleName').invalid && moduleForm.get('moduleName').touched"
+                class="invalid-feedback">Module Name is required</div>
+        </div>
+
+        <div class="form-group">
+            <label for="moduleDescription">Module Description:</label>
+            <textarea id="moduleDescription" class="form-control" formControlName="moduleDescription"></textarea>
+        </div>
+
+        <div class="form-group">
+            <h4>Operations:</h4>
+            <button type="button" class="btn btn-primary" (click)="openStakeholdersModal(operationsModal)">Add
+                Operation</button>
+            <div formArrayName="operations">
+                <div *ngFor="let operation of this.moduleForm.get('operations').controls; let i = index"
+                    class="form-row">
+                    <div class="col-10">
+                        <input type="text" class="form-control" [formControl]="operation">
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-danger" (click)="removeOperation(i)">Remove</button>
+                    </div>
+                </div>
+            </div>
+            <div [innerHtml]="badges.join(',')"></div>
+
+        </div>
+
+        <div class="form-group">
+            <h4>Stakeholders:</h4>
+
+            <button type="button" class="btn btn-primary" (click)="openStakeholdersModal(stakeholdersModal)">Add
+                Stakeholder</button>
+            <!-- <div formArrayName="stakeholders">
+                <div *ngFor="let stakeholder of this.moduleForm.get('stakeholders').controls; let i = index"
+                    class="form-row">
+                    <div class="col">
+                        <input type="text" class="form-control" formControlName="name" placeholder="Stakeholder Name">
+                        <div *ngIf="stakeholder.get('name').invalid && stakeholder.get('name').touched"
+                            class="invalid-feedback">Stakeholder Name is required</div>
+                    </div>
+                    <div class="col">
+                        <input type="text" class="form-control" formControlName="role" placeholder="Role">
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-primary" (click)="addStakeholderOperation(i)">Add
+                            Operation</button>
+                        <div formArrayName="operations">
+                            <div *ngFor="let operation of stakeholder.get('operations').controls; let j = index"
+                                class="form-row">
+                                <div class="col-10">
+                                    <input type="text" class="form-control" [formControl]="operation">
+                                </div>
+                                <div class="col">
+                                    <button type="button" class="btn btn-danger"
+                                        (click)="removeStakeholderOperation(i, j)">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-danger" (click)="removeStakeholder(i)">Remove
+                            Stakeholder</button>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+
+
+        <div class="form-group">
+            <h4>Routes:</h4>
+
+
+            <div>
+                <table class="table">
+                    <tr>
+                        <th>Operation</th>
+                        <th>Route</th>
+                        <th>Is Menu Item</th>
+                        <th>Menu Name</th>
+                    </tr>
+                    <tr *ngFor="let item of this.moduleForm.get('routes').controls; let i = index" class="form-row"
+                        [formGroup]="item">
+                        <td class="col">
+                            {{item.get('operation').value}}
+                        </td>
+
+                        <td class="col">
+                            {{item.get('route').value}}
+                        </td>
+                        <td class="col">
+                            <input type="checkbox" name="isRoute" formControlName="isMenuItem"
+                                [value]="item.get('isMenuItem').value">
+
+                        </td>
+                        <td class="col">
+
+                            <input type="text" class="form-control" formControlName="menuName"
+                                [value]="item.get('menuName').value">
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <h4>Form:</h4>
+            <select class="form-control">
+                <option selected disabled>Select Form</option>
+                <option value="1">Vespro Form</option>
+            </select>
+        </div>
+
+
+        <div class="form-group">
+            <h4>Grids:</h4>
+            <table class="table">
+                <tr>
+                    <th>Stakeholder</th>
+                    <th>Grid</th>
+                </tr>
+                <tr *ngFor="let item of moduleForm.get('grids').controls;let i = index" [formGroup]="item">
+                    <td>{{item.get('stakeholderType').value}}</td>
+                    <td><select formControlName="gridId">
+                        <option selected disabled>select</option>
+                        <option>Grid for Shipping Agent</option>
+                        <option>Grid for Port Contractor</option>
+                    </select></td>
+                </tr>
+            </table>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<!-- Stakeholders Modal -->
+<ng-template #stakeholdersModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Stakeholders</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div *ngFor="let type of ['Shipping Agent', 'Port Contractor']">
+            <label>
+                <input type="checkbox" (change)="onChange(type, $event.target.checked)">
+                {{ type }}
+            </label>
+        </div>
+        <button class="btn btn-primary" (click)="submitStakeholders()">Submit</button>
+    </div>
+</ng-template>
+
+<!-- Operations Modal -->
+<ng-template #operationsModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Operations</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="operationForm" (ngSubmit)="onOperationsSubmit()">
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input type="checkbox" formControlName="create"> Create
+                </label>
+            </div>
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input type="checkbox" formControlName="update"> Update
+                </label>
+            </div>
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input type="checkbox" formControlName="delete"> Delete
+                </label>
+            </div>
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input type="checkbox" formControlName="view"> View
+                </label>
+            </div>
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input type="checkbox" formControlName="approve"> Approve
+                </label>
+            </div>
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input type="checkbox" formControlName="reject"> Reject
+                </label>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</ng-template>
