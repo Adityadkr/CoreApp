@@ -29,7 +29,7 @@
                         <input class="form-control" *ngIf="['date','datetime-local'].includes(field.type)"
                             [min]="getMinDate(field.validators)" [max]="getMaxDate(field.validators)" [type]="field.type"
                             [formControlName]="field.name">
-                        {{form.get(field.name).errors | json}}
+                        <!-- {{form.get(field.name).errors | json}} -->
                         <!-- <input class="form-control" [name]="field.name" [type]="field.type"
                             [formControlName]="field.name"
                              
@@ -45,6 +45,6 @@
     </table>
 </div>
 
-<p>
+<!-- <p>
     {{formArray.value|json}}
-</p>
+</p> -->

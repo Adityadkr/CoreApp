@@ -1,4 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add',
@@ -7,481 +9,254 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AddComponent implements OnInit {
 
-  template = {
-    "masterId": "vessel",
-    "activeTab": "vesselDetails",
-    "tabs": [
-      {
-        "id": "vesselDetails",
-        "label": "Vessel Details",
-        "content": {
-          "form": {
-            "controls": [
-              {
-                "name": "id",
-                "type": "hidden",
-                "label": "ID",
-                "value": ""
-              },
-              {
-                "label": "ID",
-                "name": "createdBy",
-                "type": "hidden"
-              },
-              {
-                "label": "ID",
-                "name": "createdDate",
-                "type": "hidden"
-              },
-              {
-                "label": "ID",
-                "name": "updatedBy",
-                "type": "hidden"
-              },
-              {
-                "label": "ID",
-                "name": "updatedDate",
-                "type": "hidden"
-              },
-              {
-                "name": "vesselName",
-                "type": "text",
-                "label": "Vessel Name",
-                "value": ""
-              },
-              {
-                "name": "callSign",
-                "type": "text",
-                "label": "Call Sign",
-                "value": ""
-              },
-              {
-                "name": "type",
-                "type": "text",
-                "label": "Type",
-                "value": ""
-              },
-              {
-                "name": "imoNo",
-                "type": "text",
-                "label": "Imo No.",
-                "value": ""
-              },
-              {
-                "name": "nameOfHullInsurance",
-                "type": "text",
-                "label": "Name of Hull Insurance",
-                "value": ""
-              },
-              {
-                "name": "piClubDetails",
-                "type": "array",
-                "label": "PI Club Details",
-                "fields": [
+
+  objModule = {
+    "vessel": {
+      "template": {
+        "masterId": "vessel",
+        "activeTab": "vesselDetails",
+        "tabs": [
+          {
+            "id": "vesselDetails",
+            "label": "Vessel Details",
+            "content": {
+              "form": {
+                "masterKeys": ["TYPE"],
+                "controls": [
+                  {
+                    "name": "id",
+                    "type": "hidden",
+                    "label": "ID",
+                    "value": ""
+                  },
                   {
                     "label": "ID",
-                    "name": "id",
+                    "name": "createdBy",
                     "type": "hidden"
                   },
                   {
-                    "label": "PI Club Name",
-                    "name": "piClubName",
-                    "type": "text"
+                    "label": "ID",
+                    "name": "createdDate",
+                    "type": "hidden"
                   },
                   {
-                    "label": "PI Club Type",
-                    "name": "piClubType",
-                    "type": "text"
+                    "label": "ID",
+                    "name": "updatedBy",
+                    "type": "hidden"
+                  },
+                  {
+                    "label": "ID",
+                    "name": "updatedDate",
+                    "type": "hidden"
+                  },
+                  {
+                    "name": "vesselName",
+                    "type": "text",
+                    "label": "Vessel Name",
+                    "value": "",
+                    "validators": [
+                      {
+                        "validator": "required",
+                        "errormessage": "Vessel Name is required."
+                      },
+                      {
+                        "validator": "pattern",
+                        "value": "^[a-zA-Z ]*$",
+                        "errormessage": "Vessel name should be alphabetic."
+                      },
+                    ]
+
+                  },
+
+                  {
+                    "name": "callSign",
+                    "type": "date",
+                    "label": "Call Sign",
+                    "value": "",
+                    "validators": [
+                      {
+                        "validator": "required",
+                        "errormessage": "Vessel Name is required."
+                      }]
+                  },
+                  {
+                    "name": "type",
+                    "type": "dropdown",
+                    "label": "Type",
+                    "value": "",
+                    "key": "TYPE",
+                    "validators": [
+                      {
+                        "validator": "required",
+                        "errormessage": "Vessel Name is required."
+                      }]
+                    //"behaviour":"",
+                    // "options": [
+                    //   {
+                    //     key: 1, value: "Type 1"
+                    //   },
+                    //   {
+                    //     key: 2, value: "Type 2"
+                    //   }
+                    // ]
+                  },
+                  {
+                    "name": "imoNo",
+                    "type": "number",
+                    "label": "Imo No.",
+                    "value": "",
+                    "validators": [
+                      {
+                        "validator": "required",
+                        "errormessage": "Imo no is required."
+                      },
+
+                      {
+                        "validator": "min",
+                        "value": 1,
+                        "errormessage": "Imo no cannot be less than 0"
+                      },
+                      {
+                        "validator": "max",
+                        "value": 9999,
+                        "errormessage": "Imo no cannot be more than 9999"
+                      },
+                    ],
+                    "conditionalValidators": [
+                      {
+                        "type": "enable_disable",
+                        "event": "change",
+                        "action": "disable",
+                        "controls": ['nameOfHullInsurance'],
+                        "condition": "imoNo > 10 && imoNo <20"
+                      }
+                    ]
+
+                  },
+                  {
+                    "name": "nameOfHullInsurance",
+                    "type": "text",
+                    "label": "Name of Hull Insurance",
+                    "value": "",
+
+                  },
+                  {
+                    "name": "country",
+                    "type": "dropdown",
+                    "label": "Country",
+                    "value": "",
+                    "behaviour": "cascade",
+                    "configcascade": {
+                      "group": "location",
+                      "order": 1,
+                      "url": "",
+                      "key": "COUNTRY",
+                    },
+
+                  },
+                  {
+                    "name": "state",
+                    "type": "dropdown",
+                    "label": "State",
+                    "value": "",
+                    "behaviour": "cascade",
+                    "configcascade": {
+                      "group": "location",
+                      "order": 2,
+                      "url": "",
+                      "key": "State",
+                    },
+
+                  },
+                  {
+                    "name": "city",
+                    "type": "dropdown",
+                    "label": "City",
+                    "value": "",
+                    "behaviour": "cascade",
+                    "configcascade": {
+                      "group": "location",
+                      "order": 3,
+                      "url": "",
+                      "key": "CITY",
+                    },
+
+                  },
+                  {
+                    "name": "subject",
+                    "type": "dropdown",
+                    "label": "Subject",
+                    "value": "",
+                    "behaviour": "cascade",
+                    "configcascade": {
+                      "group": "book",
+                      "order": 1,
+                      "url": "",
+                      "key": "SUBJECT",
+                    },
+
+                  },
+                  {
+                    "name": "topic",
+                    "type": "dropdown",
+                    "label": "Topic",
+                    "value": "",
+                    "behaviour": "cascade",
+                    "configcascade": {
+                      "group": "book",
+                      "order": 2,
+                      "url": "",
+                      "key": "TOPIC",
+                    },
+
+                  },
+                  {
+                    "name": "piClubDetails",
+                    "type": "array",
+                    "label": "PI Club Details",
+                    "validators": [
+                      {
+                        "validator": "required",
+                        "errormessage": "PI Club Details is required."
+                      },
+                    ],
+                    "fields": [
+                      {
+                        "label": "ID",
+                        "name": "id",
+                        "type": "hidden"
+                      },
+                      {
+                        "label": "PI Club Name",
+                        "name": "piClubName",
+                        "type": "text"
+                      },
+                      {
+                        "label": "PI Club Type",
+                        "name": "piClubType",
+                        "type": "text"
+                      }
+                    ]
                   }
                 ]
               }
-            ]
+            }
           }
-        }
+        ]
       }
-    ]
+    }
   }
-  patchData: any ={}
-  // data = {
-  //   activeTab: "berthDetails",
-  //   tabs: [
-  //     {
-  //       id: 'berthDetails', label: 'Berth Details',
-  //       content: {
-  //         title: "1",
-  //         form: {
-  //           "controls": [
-  //             {
-  //               "name": "vcn",
-  //               "label": "VCN",
-  //               "value": "",
-  //               "type": "text",
+  patchData: any = {}
+  module: string;
 
-  //               "validators": [
-  //                 {
-  //                   "validator": "required",
-  //                   "errormessage": "Vcn is required."
-  //                 },
-  //                 {
-  //                   "validator": "minlength",
-  //                   "value": 10,
-  //                   "errormessage": "Vcn should be 10 characters long."
-  //                 }],
-  //               "conditonalValidatiors": [
-  //                 {
-  //                   "type": "enable_disable",
-  //                   "event": "change",
-  //                   "action": "disable",
-  //                   "controls": ['vesselName'],
-  //                   "condition": "vcn != null && vcn == ''"
-  //                 }
-  //               ]
-
-  //             },
-  //             {
-  //               "name": "imo",
-  //               "label": "Imo No.",
-  //               "value": "",
-  //               "type": "number",
-
-  //               "validators": [
-  //                 {
-  //                   "validator": "required",
-  //                   "errormessage": "Imo no. is required."
-  //                 },
-  //                 {
-  //                   "validator": "min",
-  //                   "value": 0,
-  //                   "errormessage": "Imo no. cannot be 0."
-  //                 }
-  //               ],
-  //               "conditonalValidatiors": [
-  //                 {
-  //                   "type": "enable_disable",
-  //                   "event": "change",
-  //                   "action": "disable",
-  //                   "controls": ['vesselName'],
-  //                   "condition": "(vcn != null && vcn != '') && imo == 5"
-  //                 }
-  //               ]
-
-  //             },
-  //             {
-  //               "name": "vesselName",
-  //               "label": "Vessel Name",
-  //               "value": "",
-  //               "type": "text",
-
-  //               "validators": [
-  //                 {
-  //                   "validator": "required",
-  //                   "errormessage": "Vessel Name is required."
-  //                 }
-  //               ],
-
-  //             },
-  //             {
-  //               "name": "expectedDateOfBerthing",
-  //               "label": "Expected Date of Berthing",
-  //               "value": "",
-  //               "type": "date",
-
-  //               "validators": [
-  //                 {
-  //                   "validator": "required",
-  //                   "errormessage": "Expected Date of Berthing is required."
-  //                 }
-  //               ],
-
-  //             },
-  //             {
-  //               "name": "vesselType",
-  //               "label": "Vessel Type",
-  //               "value": "",
-  //               "type": "dropdown",
-  //               "key": "VESSEL_TYPE",
-  //               "options": [
-  //                 // { key: 'IND', value: 'India' },
-  //                 // { key: 'USA', value: 'America' },
-  //                 // { key: 'CAN', value: 'Canada' },
-  //               ],
-  //               "validators": [
-  //                 {
-  //                   "validator": "required",
-  //                   "errormessage": "Vessel Type is required."
-  //                 }
-  //               ],
-
-  //             },
-  //             {
-  //               "name": "action",
-  //               "label": "Action",
-  //               "value": "",
-  //               "type": "dropdown",
-  //               "key": "BERTH_TYPE",
-  //               "options": [
-  //                 // { key: 'IND', value: 'India' },
-  //                 // { key: 'USA', value: 'America' },
-  //                 // { key: 'CAN', value: 'Canada' },
-  //               ],
-  //               "validators": [
-  //                 {
-  //                   "validator": "required",
-  //                   "errormessage": "Action is required."
-  //                 }
-  //               ],
-
-  //             },
-  //             {
-  //               "name": "country",
-  //               "label": "Country",
-  //               "value": "",
-  //               "type": "dropdown",
-  //               "behaviour": "cascade",
-  //               "configcascade": {
-  //                 "group": "location",
-  //                 "order": 1,
-  //                 "url": "",
-  //                 "key": "COUNTRY",
-  //               },
-  //               "validators": [
-  //                 {
-  //                   "validator": "required",
-  //                   "errormessage": "Country is required."
-  //                 }
-  //               ],
-
-  //             },
-  //             {
-  //               "name": "state",
-  //               "label": "State",
-  //               "value": "",
-  //               "type": "dropdown",
-  //               "behaviour": "cascade",
-  //               "configcascade": {
-  //                 "group": "location",
-  //                 "order": 2,
-  //                 "url": "",
-  //                 "key": "STATE",
-  //               },
-  //               "validators": [
-  //                 {
-  //                   "validator": "required",
-  //                   "errormessage": "State is required."
-  //                 }
-  //               ],
-
-  //             },
-  //             {
-  //               "name": "city",
-  //               "label": "City",
-  //               "value": "",
-  //               "type": "dropdown",
-  //               "behaviour": "cascade",
-  //               "configcascade": {
-  //                 "group": "location",
-  //                 "order": 3,
-  //                 "url": "",
-  //                 "key": "CITY",
-  //               },
-  //               "validators": [
-  //                 {
-  //                   "validator": "required",
-  //                   "errormessage": "City is required."
-  //                 }
-  //               ],
-
-  //             },
-  //             {
-  //               "name": "dob",
-  //               "label": "Date of Birth",
-  //               "type": "date",
-  //               "validators": [
-  //                 {
-  //                   validator: "required",
-  //                   "errormessage": "Date of Birth is required"
-  //                 },
-  //                 {
-  //                   validator: "min",
-  //                   value: new Date().toISOString().substring(0, 16),
-  //                   // value:"2023-04-05",
-  //                   "message": "Date shoud"
-  //                 }
-  //               ]
-  //             },
-  //             {
-  //               "name": "berthDetails",
-  //               "label": "Expected Date of Berthing",
-  //               "value": "",
-  //               "type": "array",
-
-  //               "validators": [
-  //                 {
-  //                   "validator": "required",
-  //                   "errormessage": "Berthing Details are required."
-  //                 }
-  //               ],
-  //               "fields": [
-  //                 {
-  //                   "name": "firstName",
-  //                   "label": "First Name",
-  //                   "type": "text",
-  //                   "validators": [
-  //                     {
-  //                       "required": true,
-  //                       "message": "First name is required."
-  //                     }
-  //                   ]
-  //                 },
-  //                 {
-  //                   "name": "lastName",
-  //                   "label": "Last Name",
-  //                   "type": "number",
-  //                   "validators": [
-  //                     {
-  //                       validator: "required",
-  //                       "message": "Last name is required."
-  //                     }
-  //                   ]
-  //                 },
-  //                 {
-  //                   "name": "dob",
-  //                   "label": "Date of Birth",
-  //                   "type": "datetime-local",
-  //                   "validators": [
-  //                     {
-  //                       validator: "required",
-  //                       "message": "Date shoud"
-  //                     },
-  //                     {
-  //                       validator: "min",
-  //                       value:  new Date().toISOString().substring(0, 16),
-  //                       // value:"2023-04-05 04:10",
-  //                       "errormessage": "Date shoud"
-  //                     }
-  //                   ]
-  //                 }
-  //               ]
-
-
-  //             },
-  //           ],
-  //           "masters": [
-  //             { "type": "VESSEL_TYPE", "key": "mil", "value": "Military" },
-  //             { "type": "VESSEL_TYPE", "key": "reg", "value": "Regular" },
-  //             { "type": "BERTH_TYPE", "key": "A01", "value": "Anchorage" },
-  //             { "type": "BERTH_TYPE", "key": "A02", "value": "Berth" },
-  //             { "id": 1, "type": "COUNTRY", "key": "IND", "value": "India" },
-  //             { "id": 2, "type": "COUNTRY", "key": "CHN", "value": "China" },
-  //             { "id": 3, "type": "STATE", "key": "MAH", "value": "Maharashtra", "parent": 1 },
-  //             { "id": 8, "type": "STATE", "key": "CHEN", "value": "Chennai", "parent": 1 },
-  //             { "id": 4, "type": "STATE", "key": "HAI", "value": "Hainan", "parent": 2 },
-  //             { "id": 5, "type": "CITY", "key": "MUM", "value": "Mumbai", "parent": 3 },
-  //             { "id": 5, "type": "CITY", "key": "THN", "value": "Thane", "parent": 3 },
-  //             { "id": 6, "type": "CITY", "key": "FUJ", "value": "Fujian", "parent": 4 },
-  //             { "id": 7, "type": "CITY", "key": "SHA", "value": "Shadong", "parent": 4 },
-  //             { "id": 9, "type": "CITY", "key": "BAN", "value": "Banglore", "parent": 8 },
-  //           ]
-  //         }
-  //       }
-  //     },
-  //     {
-  //       id: 'vesselDetails', label: 'Vessel Details',
-  //       content: {
-  //         title: "2",
-  //         form: {
-  //           "controls": [
-  //             {
-  //               "name": "pd",
-  //               "label": "Present Displacement(Mtrs)",
-  //               "value": "",
-  //               "type": "number",
-
-  //               "validators": [
-  //                 {
-  //                   "validator": "required",
-  //                   "errormessage": "Present Displacement(Mtrs) is required."
-  //                 },
-  //                 {
-  //                   "validator": "min",
-  //                   "value": 1,
-  //                   "errormessage": "Present Displacement(Mtrs) cannot be less than 1"
-  //                 }
-  //               ],
-  //               "events": ["change"]
-  //             },
-  //             {
-  //               "name": "dfwd",
-  //               "label": "Draft Fwd(Mtrs)",
-  //               "value": "",
-  //               "type": "number",
-
-  //               "validators": [
-  //                 {
-  //                   "validator": "required",
-  //                   "errormessage": "Draft Fwd(Mtrs) is required."
-  //                 },
-  //                 {
-  //                   "validator": "min",
-  //                   "value": 1,
-  //                   "errormessage": "Draft Fwd(Mtrs) cannot be less than 1"
-  //                 }
-  //               ],
-  //               "events": ["change"]
-  //             }, {
-  //               "name": "daft",
-  //               "label": "Draft AFT(Mtrs)",
-  //               "value": "",
-  //               "type": "number",
-
-  //               "validators": [
-  //                 {
-  //                   "validator": "required",
-  //                   "errormessage": "Draft AFT(Mtrs) is required."
-  //                 },
-  //                 {
-  //                   "validator": "min",
-  //                   "value": 1,
-  //                   "errormessage": "Draft AFT(Mtrs) cannot be less than 1"
-  //                 }
-  //               ],
-  //               "events": ["change"]
-  //             }
-  //           ]
-  //         }
-  //       }
-  //     },
-  //     {
-  //       id: 'grab', label: 'Grab Details',
-  //       content: {
-  //         title: "3",
-  //         form: {
-  //           controls: [{
-  //             "name": "Gender",
-  //             "label": "Please select your gender.",
-  //             "value": null,
-  //             "type": "radio",
-  //             "options": [
-  //               { key: 'M', value: 'Male' },
-  //               { key: 'F', value: 'Female' },
-  //               { key: 'O', value: 'Other' },
-  //             ],
-  //             "validators": [
-  //               { "validator": "required", "errormessage": "Gender is required" }
-  //             ]
-  //           }],
-  //         }
-  //       }
-  //     }
-  //   ]
-  // }
-  constructor() { }
+  constructor(private _http: HttpClient, private _router: Router) { }
 
   ngOnInit(): void {
-    this.getById();
+    this.module = this._router.url.split('/')[1].toString()
+
   }
 
-  getById(){
+  getById() {
     this.patchData = {
       "id": 4,
       "vesselName": "abhishek ",
@@ -498,13 +273,26 @@ export class AddComponent implements OnInit {
       "portId": null,
       "isActive": null,
       "piClubDetails": [
-          {
-              "id": 5,
-              "piClubName": "2ad",
-              "piClubType": "da"
-          }
+        {
+          "id": 5,
+          "piClubName": "2ad",
+          "piClubType": "da"
+        }
       ]
+    }
   }
+  submit(e) {
+    // alert(JSON.stringify(e))
+    this._http.post("http://localhost:8080/" + this.module, e).subscribe(resp => {
+      alert("Data Inserted Successfully!!");
+      this._router.navigateByUrl(this.module + "/list")
+    })
+  }
+
+  mockApiCall() {
+    this._http.post("", { "keys": ['key1', 'key2'] }).subscribe(resp => {
+      this.objModule[this.module].template.tabs["masters"] = resp;
+    })
   }
 
 }

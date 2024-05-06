@@ -1,169 +1,215 @@
 <form [formGroup]="myForm">
     <div class="row">
         <ng-container *ngFor="let control of formTemplate.controls">
-            <div class="form-group" *ngIf="['text','password','email','number','search','tel','url'].includes(control?.type)"
+            <div class="form-group" *ngIf="control.type == 'text'"
                 [ngClass]="{'col-md-3 mx-4 my-4':columns === 3, 'col-5 mx-3 my-3':columns === 2,' mx-2 my-2':columns === 1}">
-                <div >
 
 
-                    <label>{{control?.label}}</label>
-                    <input [type]="control?.type" [formControlName]="control?.name" [value]="control?.value"
-                        class="form-control"
+
+
+                <label>{{control?.label}}</label>
+
+                <!-- <input type="text" [formControlName]="control?.name" [value]="control?.value"
+                class="form-control" (change)="hasEvent(control?.name,'change') && event(control?.name,'change')"
+                (keyup)="hasEvent(control?.name,'keyup') && event(control?.name,'keyup')"
+                (hover)="hasEvent(control?.name,'hover') && event(control?.name,'hover')"> -->
+                <input type="text" [formControlName]="control?.name" class="form-control">
+
+                <div class="text-danger" *ngIf="checkError(control?.name) && submitted">
+                    <div *ngFor="let error of control?.validators">
+                        <span
+                            *ngIf="this.myForm.controls[control?.name].hasError(error?.validator.toLowerCase());">{{error?.errormessage}}</span>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="form-group" *ngIf="['password','email','number','search','tel','url'].includes(control?.type)"
+                [ngClass]="{'col-md-3 mx-4 my-4':columns === 3, 'col-5 mx-3 my-3':columns === 2,' mx-2 my-2':columns === 1}">
+
+
+
+
+                <label>{{control?.label}}</label>
+                <input [type]="control?.type" [formControlName]="control?.name" [value]="control?.value"
+                    class="form-control" (change)="hasEvent(control?.name,'change') && event(control?.name,'change')"
+                    (keyup)="hasEvent(control?.name,'keyup') && event(control?.name,'keyup')"
+                    (hover)="hasEvent(control?.name,'hover') && event(control?.name,'hover')">
+                <div class="text-danger" *ngIf="checkError(control?.name) && submitted">
+                    <div *ngFor="let error of control?.validators">
+                        <span
+                            *ngIf="this.myForm.controls[control?.name].hasError(error?.validator.toLowerCase());">{{error?.errormessage}}</span>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            <div *ngIf="control?.type === 'textarea'" class="form-group"
+                [ngClass]="{'col-md-3 mx-4 my-4':columns === 3, 'col-5 mx-3 my-3':columns === 2,' mx-2 my-2':columns === 1}">
+
+                <label>{{control?.label}}</label>
+                <input [type]="control?.type" [formControlName]="field?.name" [value]="field?.value"
+                    class="form-control">
+                <div class="text-danger" *ngIf="checkError(field?.name) && submitted">
+                    <div *ngFor="let error of control?.validators">
+                        <span
+                            *ngIf="this.myForm.controls[control?.name].hasError(error?.validator.toLowerCase());">{{error?.errormessage}}</span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div *ngIf="control?.type === 'range'" class="form-group"
+                [ngClass]="{'col-md-3 mx-4 my-4':columns === 3, 'col-5 mx-3 my-3':columns === 2,' mx-2 my-2':columns === 1}">
+                <label>{{control?.label}}</label>
+                <input [min]="control?.options.min" [step]="control?.options.step" [max]="control?.options.max"
+                    type="range" [formControlName]="control?.name" class="form-control-range" id="formControlRange"
+                    (change)="hasEvent(control?.name,'change') && event(control?.name,'change')"
+                    (keyup)="hasEvent(control?.name,'keyup') && event(control?.name,'keyup')"
+                    (hover)="hasEvent(control?.name,'hover') && event(control?.name,'hover')">
+                {{myForm.controls[control?.name]?.value}}
+                <div class="text-danger" *ngIf="checkError(control?.name) && submitted">
+                    <div *ngFor="let error of control?.validators">
+                        <span
+                            *ngIf="this.myForm.controls[control?.name].hasError(error?.validator.toLowerCase());">{{error?.errormessage}}</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div *ngIf="control?.type === 'radio'" class="form-group"
+                [ngClass]="{'col-md-3 mx-4 my-4':columns === 3, 'col-5 mx-3 my-3':columns === 2,' mx-2 my-2':columns === 1}">
+                <label>{{control?.label}}</label>
+                <div class="form-check" *ngFor="let item of control?.options">
+                    <input [name]="item.name" type="radio" [formControlName]="control?.name" [value]="item.id"
+                        class="form-check-input"
                         (change)="hasEvent(control?.name,'change') && event(control?.name,'change')"
                         (keyup)="hasEvent(control?.name,'keyup') && event(control?.name,'keyup')"
                         (hover)="hasEvent(control?.name,'hover') && event(control?.name,'hover')">
-                    <div class="text-danger" *ngIf="checkError(control?.name) && submitted">
-                        <div *ngFor="let error of control?.validators">
-                            <span
-                                *ngIf="this.myForm.controls[control?.name].hasError(error?.validator.toLowerCase());">{{error?.errormessage}}</span>
-                        </div>
+                    <label class="form-check-label" for="flexRadioDefault1">
+                        {{item?.value}}
+                    </label>
+                </div>
+
+                <div class="text-danger" *ngIf="checkError(control?.name) && submitted">
+                    <div *ngFor="let error of control?.validators">
+                        <span
+                            *ngIf="this.myForm.controls[control?.name].hasError(error?.validator.toLowerCase());">{{error?.errormessage}}</span>
                     </div>
                 </div>
 
-
-                <div *ngIf="control?.type === 'textarea'">
-
-                    <label>{{control?.label}}</label>
-                    <input [type]="control?.type" [formControlName]="field?.name" [value]="field?.value"
-                        class="form-control">
-                    <div class="text-danger" *ngIf="checkError(field?.name) && submitted">
-                        <div *ngFor="let error of control?.validators">
-                            <span
-                                *ngIf="this.myForm.controls[control?.name].hasError(error?.validator.toLowerCase());">{{error?.errormessage}}</span>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div *ngIf="control?.type === 'range'">
-                    <label>{{control?.label}}</label>
-                    <input [min]="control?.options.min" [step]="control?.options.step" [max]="control?.options.max"
-                        type="range" [formControlName]="control?.name" class="form-control-range" id="formControlRange"
+            </div>
+            <div *ngIf="control?.type === 'checkbox'" class="form-group"
+                [ngClass]="{'col-md-3 mx-4 my-4':columns === 3, 'col-5 mx-3 my-3':columns === 2,' mx-2 my-2':columns === 1}">
+                <label>{{control?.name}}</label>
+                <div class="form-check" *ngFor="let item of control?.options">
+                    <input [name]="item.name" type="checkbox" [formControlName]="control?.name" class="form-check-input"
                         (change)="hasEvent(control?.name,'change') && event(control?.name,'change')"
                         (keyup)="hasEvent(control?.name,'keyup') && event(control?.name,'keyup')"
                         (hover)="hasEvent(control?.name,'hover') && event(control?.name,'hover')">
-                    {{myForm.controls[control?.name]?.value}}
-                    <div class="text-danger" *ngIf="checkError(control?.name) && submitted">
-                        <div *ngFor="let error of control?.validators">
-                            <span
-                                *ngIf="this.myForm.controls[control?.name].hasError(error?.validator.toLowerCase());">{{error?.errormessage}}</span>
-                        </div>
-                    </div>
-
+                    <label class="form-check-label" for="flexRadioDefault1">
+                        {{item?.value}}
+                    </label>
                 </div>
-
-                <div *ngIf="control?.type === 'radio'">
-                    <label>{{control?.label}}</label>
-                    <div class="form-check" *ngFor="let item of control?.options">
-                        <input [name]="item.name" type="radio" [formControlName]="control?.name" [value]="item.key"
-                            class="form-check-input"
-                            (change)="hasEvent(control?.name,'change') && event(control?.name,'change')"
-                            (keyup)="hasEvent(control?.name,'keyup') && event(control?.name,'keyup')"
-                            (hover)="hasEvent(control?.name,'hover') && event(control?.name,'hover')">
-                        <label class="form-check-label" for="flexRadioDefault1">
-                            {{item?.value}}
-                        </label>
-                    </div>
-
-                    <div class="text-danger" *ngIf="checkError(control?.name) && submitted">
-                        <div *ngFor="let error of control?.validators">
-                            <span
-                                *ngIf="this.myForm.controls[control?.name].hasError(error?.validator.toLowerCase());">{{error?.errormessage}}</span>
-                        </div>
-                    </div>
-
-                </div>
-                <div *ngIf="control?.type === 'checkbox'">
-                    <label>{{control?.name}}</label>
-                    <div class="form-check" *ngFor="let item of control?.options">
-                        <input [name]="item.name" type="checkbox" [formControlName]="control?.name"
-                            class="form-check-input"
-                            (change)="hasEvent(control?.name,'change') && event(control?.name,'change')"
-                            (keyup)="hasEvent(control?.name,'keyup') && event(control?.name,'keyup')"
-                            (hover)="hasEvent(control?.name,'hover') && event(control?.name,'hover')">
-                        <label class="form-check-label" for="flexRadioDefault1">
-                            {{item?.value}}
-                        </label>
-                    </div>
-                    <div class="text-danger" *ngIf="checkError(control?.name) && submitted">
-                        <div *ngFor="let error of control?.validators">
-                            <span
-                                *ngIf="this.myForm.controls[control?.name].hasError(error?.validator.toLowerCase());">{{error?.errormessage}}</span>
-                        </div>
+                <div class="text-danger" *ngIf="checkError(control?.name) && submitted">
+                    <div *ngFor="let error of control?.validators">
+                        <span
+                            *ngIf="this.myForm.controls[control?.name].hasError(error?.validator.toLowerCase());">{{error?.errormessage}}</span>
                     </div>
                 </div>
-                <div *ngIf="['date','datetime-local'].includes(control?.type)">
-                    <label>{{control?.label}}</label><br>
+            </div>
+            <div *ngIf="['date','datetime-local'].includes(control?.type)" class="form-group"
+                [ngClass]="{'col-md-3 mx-4 my-4':columns === 3, 'col-5 mx-3 my-3':columns === 2,' mx-2 my-2':columns === 1}">
+                <label>{{control?.label}}</label><br>
 
-                    <input class="form-control" [name]="control?.name" type="{{control?.type}}"
-                        [formControlName]="control?.name" [value]="" [min]="getMinDate(control?.validators)"
-                        [max]="getMaxDate(control?.validators)"
-                        (change)="hasEvent(control?.name,'change') && event(control?.name,'change')"
-                        (keyup)="hasEvent(control?.name,'keyup') && event(control?.name,'keyup')"
-                        (keydown)="hasEvent(control?.name,'keydown') && event(control?.name,'keydown')"
-                        (hover)="hasEvent(control?.name,'hover') && event(control?.name,'hover')">
+                <input class="form-control" [name]="control?.name" type="{{control?.type}}"
+                    [formControlName]="control?.name" [value]="" [min]="getMinDate(control?.validators)"
+                    [max]="getMaxDate(control?.validators)"
+                    (change)="hasEvent(control?.name,'change') && event(control?.name,'change')"
+                    (keyup)="hasEvent(control?.name,'keyup') && event(control?.name,'keyup')"
+                    (keydown)="hasEvent(control?.name,'keydown') && event(control?.name,'keydown')"
+                    (hover)="hasEvent(control?.name,'hover') && event(control?.name,'hover')">
 
-                    <div class="text-danger" *ngIf="checkError(control?.name) && submitted">
-                        <div *ngFor="let error of control?.validators">
-                            <span
-                                *ngIf="this.myForm.controls[control?.name].hasError(error?.validator.toLowerCase());">{{error?.errormessage}}</span>
-                        </div>
+                <div class="text-danger" *ngIf="checkError(control?.name) && submitted">
+                    <div *ngFor="let error of control?.validators">
+                        <span
+                            *ngIf="this.myForm.controls[control?.name].hasError(error?.validator.toLowerCase());">{{error?.errormessage}}</span>
                     </div>
                 </div>
+            </div>
 
-                <div *ngIf="control?.type === 'dropdown' && (control?.behaviour == '' ||  control?.behaviour == null)">
+            <div *ngIf="control?.type === 'dropdown' && (control?.behaviour == '' || control?.behaviour == null )"
+                class="form-group"
+                [ngClass]="{'col-md-3 mx-4 my-4':columns === 3, 'col-5 mx-3 my-3':columns === 2,' mx-2 my-2':columns === 1}">
 
-                    <label>{{control?.label}}</label><br>
-                    <select [formControlName]="control?.name" class="form-control"
-                        (change)="hasEvent(control?.name,'change') && event(control?.name,'change')"
-                        (keyup)="hasEvent(control?.name,'keyup') && event(control?.name,'keyup')"
-                        (keydown)="hasEvent(control?.name,'keydown') && event(control?.name,'keydown')"
-                        (hover)="hasEvent(control?.name,'hover') && event(control?.name,'hover')">
-                        <option selected disabled value="0">Please select {{control?.name}}</option>
-                        <ng-container *ngFor="let item of control?.options">
-                            <option *ngIf="control?.options && control?.options.length > 0" value="{{item.key}}">
-                                {{item?.value}}</option>
-                        </ng-container>
-                        <ng-container *ngIf="control?.key != null && control?.key != ''">
-                            <option *ngFor="let item of getMaster(control?.key)" value="{{item.key}}">
-                                {{item?.value}}</option>
-                        </ng-container>
-
-                    </select>
-                    <div class="text-danger" *ngIf="checkError(control?.name) && submitted">
-                        <div *ngFor="let error of control?.validators">
-                            <span
-                                *ngIf="this.myForm.controls[control?.name].hasError(error?.validator.toLowerCase());">{{error?.errormessage}}</span>
-                        </div>
-                    </div>
-                </div>
-                <div *ngIf="control?.type === 'dropdown' && (control?.behaviour == 'cascade')">
-
-                    <label>{{control?.label}}</label><br>
-                    <select [formControlName]="control?.name" class="form-control" (change)="cascade(control)"
-                        (keyup)="hasEvent(control?.name,'keyup') && event(control?.name,'keyup')"
-                        (keydown)="hasEvent(control?.name,'keydown') && event(control?.name,'keydown')"
-                        (hover)="hasEvent(control?.name,'hover') && event(control?.name,'hover')">
-                        <option selected disabled value="0">Please select {{control?.name}}</option>
-                        <ng-container *ngFor="let item of control?.options">
-                            <option *ngIf="control?.options && control?.options.length > 0" value="{{item.id}}">
-                                {{item?.value}}</option>
-                        </ng-container>
-                        <!-- <ng-container *ngIf="control?.key != null && control?.key != ''" >
-                        <option *ngFor="let item of getMaster(control?.key)" value="{{item.key}}">
+                <label>{{control?.label}}</label><br>
+                <select [formControlName]="control?.name" class="form-control"
+                    (change)="hasEvent(control?.name,'change') && event(control?.name,'change')"
+                    (keyup)="hasEvent(control?.name,'keyup') && event(control?.name,'keyup')"
+                    (keydown)="hasEvent(control?.name,'keydown') && event(control?.name,'keydown')"
+                    (hover)="hasEvent(control?.name,'hover') && event(control?.name,'hover')">
+                    <option selected disabled value="0">Please select {{control?.name}}</option>
+                    <ng-container *ngFor="let item of control?.options">
+                        <option *ngIf="control?.options && control?.options.length > 0" value="{{item.id}}">
                             {{item?.value}}</option>
-                    </ng-container> -->
+                    </ng-container>
+                    <ng-container *ngIf="control?.key != null && control?.key != ''">
+                        <option *ngFor="let item of getMaster(control?.key)" value="{{item.id}}">
+                            {{item?.value}}</option>
+                    </ng-container>
 
-                    </select>
-                    <div class="text-danger" *ngIf="checkError(control?.name) && submitted">
-                        <div *ngFor="let error of control?.validators">
-                            <span
-                                *ngIf="this.myForm.controls[control?.name].hasError(error?.validator.toLowerCase());">{{error?.errormessage}}</span>
-                        </div>
+                </select>
+                <div class="text-danger" *ngIf="checkError(control?.name) && submitted">
+                    <div *ngFor="let error of control?.validators">
+                        <span
+                            *ngIf="this.myForm.controls[control?.name].hasError(error?.validator.toLowerCase());">{{error?.errormessage}}</span>
                     </div>
                 </div>
+            </div>
+            <div *ngIf="control?.type === 'dropdown' && (control?.behaviour == 'cascade')" class="form-group"
+                [ngClass]="{'col-md-3 mx-4 my-4':columns === 3, 'col-5 mx-3 my-3':columns === 2,' mx-2 my-2':columns === 1}">
+
+                <label>{{control?.label}}</label><br>
+                <select [formControlName]="control?.name" class="form-control" (change)="cascade(control)"
+                    (keyup)="hasEvent(control?.name,'keyup') && event(control?.name,'keyup')"
+                    (keydown)="hasEvent(control?.name,'keydown') && event(control?.name,'keydown')"
+                    (hover)="hasEvent(control?.name,'hover') && event(control?.name,'hover')">
+                    <option selected disabled value="0">Please select {{control?.name}}</option>
+                    <ng-container *ngFor="let item of control?.options">
+                        <option *ngIf="control?.options && control?.options.length > 0" value="{{item.id}}">
+                            {{item?.value}}</option>
+                    </ng-container>
+                    <!-- <ng-container *ngIf="control?.key != null && control?.key != ''" >
+                    <option *ngFor="let item of getMaster(control?.key)" value="{{item.id}}">
+                        {{item?.value}}</option>
+                </ng-container> -->
+
+                </select>
+                <div class="text-danger" *ngIf="checkError(control?.name) && submitted">
+                    <div *ngFor="let error of control?.validators">
+                        <span
+                            *ngIf="this.myForm.controls[control?.name].hasError(error?.validator.toLowerCase());">{{error?.errormessage}}</span>
+                    </div>
+                </div>
+            </div>
 
 
+
+            <div class="form-group"
+                [ngClass]="{'col-md-3 mx-4 my-4':columns === 3, 'col-5 mx-3 my-3':columns === 2,' mx-2 my-2':columns === 1}"
+                *ngIf="['imoNo','vcn'].includes(control?.type)"
+                [ngClass]="{'col-md-3 mx-4 my-4':columns === 3, 'col-5 mx-3 my-3':columns === 2,' mx-2 my-2':columns === 1}">
+                <label>{{control?.label}}</label>
+                <app-auto-complete [type]="control?.name"
+                    [control]="this.myForm.get(control?.name)"></app-auto-complete>
+                <div class="text-danger" *ngIf="checkError(control?.name) && submitted">
+                    <div *ngFor="let error of control?.validators">
+                        <span
+                            *ngIf="this.myForm.controls[control?.name].hasError(error?.validator.toLowerCase());">{{error?.errormessage}}</span>
+                    </div>
+                </div>
             </div>
         </ng-container>
 
@@ -182,7 +228,7 @@
     </div>
     <div class="row" *ngFor="let control of formTemplate.controls">
         <div *ngIf="control?.type === 'hidden'">
-            <input type="hidden" [formControlName]="control?.name" >
+            <input type="hidden" [formControlName]="control?.name">
         </div>
     </div>
     <div class="row my-2" *ngIf="!isStepForm">
@@ -194,3 +240,4 @@
     </div>
 
 </form>
+{{myForm.value | json}}

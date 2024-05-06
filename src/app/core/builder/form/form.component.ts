@@ -27,7 +27,7 @@ export class FormComponent implements OnInit {
   constructor(private fb: FormBuilder, private cdref: ChangeDetectorRef, private http: HttpClient) { }
 
   ngOnInit() {
-    //await this.loadIntialValuesForCascadingDrodownns();
+    this.loadMasters();
     this.createForm(this.formTemplate)
     if (this.data != null) {
 
@@ -41,11 +41,20 @@ export class FormComponent implements OnInit {
 
     // await this.myForm.patchValue(this.data)
   }
+  loadMasters() {
+    if (this.formTemplate?.masterKeys?.length > 0) {
+
+      this.http.get("http://localhost:8080/masters/get-by-type/" + this.formTemplate.masterKeys[0]).subscribe(resp => {
+        this.formTemplate['masters'] = resp;
+      });
+
+    }
+  }
   createForm(formTemplate: any) {
     this.loadIntialValuesForCascadingDrodownns();
     for (const control of formTemplate.controls) {
 
-      debugger
+
 
 
       const validatorsToAdd = [];
@@ -110,7 +119,7 @@ export class FormComponent implements OnInit {
 
         lstValidators.length = 0;
       }
-      else{
+      else {
         if (control.type == 'array') {
           this.myForm.addControl(
             control.name,
@@ -125,7 +134,7 @@ export class FormComponent implements OnInit {
         }
       }
     }
-
+    console.log("form", this.myForm)
     //this.myForm.setValue(this.data, {emitEvent: true, onlySelf: true})
 
 
@@ -143,6 +152,7 @@ export class FormComponent implements OnInit {
     return this.myForm.controls;
   }
   checkError(control: string) {
+
     return !!this.myForm.controls[control]?.errors;
   }
 
@@ -158,9 +168,9 @@ export class FormComponent implements OnInit {
     // frm = JSON.parse(JSON.stringify(this.formTemplate.controls)) as Array<any>
     // return !!frm.find(x => x.name == control).events?.includes(event)
     const oControl = this.formTemplate.controls.find(x => x.name == control);
-    if (oControl?.conditonalValidatiors) {
-      if (oControl.conditonalValidatiors.length > 0) {
-        const oEvents = oControl.conditonalValidatiors.filter(x => x.event == event);
+    if (oControl?.conditionalValidators) {
+      if (oControl.conditionalValidators.length > 0) {
+        const oEvents = oControl.conditionalValidators.filter(x => x.event == event);
         oEvents.forEach(element => {
           this.handleEvents(element, oControl);
         });
@@ -169,6 +179,7 @@ export class FormComponent implements OnInit {
 
   }
   handleEvents(e, oControl) {
+    debugger
     switch (e.type) {
       case 'enable_disable':
         this.enableDisable(e, oControl)
@@ -205,14 +216,29 @@ export class FormComponent implements OnInit {
       }
     }
     else {
+      const condition = e.condition.replaceAll(/\b(\w+)\b/g, (match, controlName) => {
+        const control = this.formTemplate.controls.find(c => c.name === controlName);
+        return control ? `this.myForm.get('${controlName}').value` : match;
+      });
 
+      //  const condition = e.condition.replaceAll(oControl.name, "this.myForm.get('" + oControl.name + "').value")
+      if (eval(condition)) {
+        e.controls.forEach(element => {
+          this.myForm.get(element).disable()
+        });
+      }
+      else {
+        e.controls.forEach(element => {
+          this.myForm.get(element).enable()
+        });
+      }
     }
   }
   ngOnChanges(changes: SimpleChanges) {
 
     //debugger
     console.log('formasd', changes['formTemplate']?.currentValue);
-    this.myForm.patchValue(changes['data']?.currentValue)
+    this.myForm.patchValue(changes['data']?.currentValue, { emitEvent: false, onlySelf: true })
     setTimeout(() => {
 
       this.patchValueToCascadedDropDowns();
@@ -226,7 +252,7 @@ export class FormComponent implements OnInit {
   ngAfterViewInit() {
 
     if (this.data != null) {
-      this.myForm.patchValue(this.data)
+      this.myForm.patchValue(this.data, { emitEvent: false, onlySelf: true })
       setTimeout(() => {
 
         this.patchValueToCascadedDropDowns();
@@ -243,16 +269,37 @@ export class FormComponent implements OnInit {
     return this.myForm.value;
   }
   getMaster(e) {
-    return this.formTemplate.masters.filter(x => x.type == e);
+    return this.formTemplate?.masters?.filter(x => x?.type == e);
   }
 
   //#region Cascading DropDowns
   loadIntialValuesForCascadingDrodownns() {
     const intialCascades = this.formTemplate.controls.filter(x => x.behaviour == 'cascade' && x['configcascade'].order == 1)
     intialCascades.forEach(element => {
-      this.formTemplate.controls[this.formTemplate.controls.findIndex(x => x.name == element.name)]['options'] = this.formTemplate.masters.filter(x => x.type == element['configcascade']?.key)
+      this.http.get("http://localhost:8080/masters/get-by-type/" + element?.configcascade?.key).subscribe(resp => {
+        this.formTemplate.controls[this.formTemplate.controls.findIndex(x => x.name == element.name)]['options'] = resp;
+      });
+
+      //this.formTemplate.controls[this.formTemplate.controls.findIndex(x => x.name == element.name)]['options'] = this.formTemplate.masters.filter(x => x.type == element['configcascade']?.key)
 
     });
+
+    // const requests = [
+    //   this.http.get('API_ENDPOINT_1'),
+    //   this.http.get('API_ENDPOINT_2'),
+    //   this.http.get('API_ENDPOINT_3')
+    // ];
+
+    // forkJoin(requests).subscribe(
+    //   (responses: any[]) => {
+    //     this.data1 = responses[0];
+    //     this.data2 = responses[1];
+    //     this.data3 = responses[2];
+    //   },
+    //   error => {
+    //     console.error('Error fetching data:', error);
+    //   }
+    // );
   }
   cascade(e) {
     debugger
@@ -268,7 +315,15 @@ export class FormComponent implements OnInit {
       }
     });
     //Binds data to next dependent dropdown
-    this.formTemplate.controls[currentControlIndex + 1]['options'] = this.formTemplate?.masters?.filter(x => x.type == this.formTemplate.controls[currentControlIndex + 1]['configcascade'].key && x?.parent == this.myForm.get(e.name)?.value)
+
+    if (dependentDropdowns[dependentDropdowns.length-1].configcascade?.order > e.configcascade?.order) {
+      this.http.get("http://localhost:8080/masters/get-by-parent/" + this.myForm.get(e.name)?.value).subscribe(resp => {
+        this.formTemplate.controls[currentControlIndex + 1]['options'] = resp
+      })
+    }
+
+    //static cascade logic 
+    //this.formTemplate.controls[currentControlIndex + 1]['options'] = this.formTemplate?.masters?.filter(x => x.type == this.formTemplate.controls[currentControlIndex + 1]['configcascade'].key && x?.parent == this.myForm.get(e.name)?.value)
 
 
 
@@ -283,13 +338,16 @@ export class FormComponent implements OnInit {
 
       const currentValue = this.myForm.get(element.name).value
 
-      this.formTemplate.controls[currentControlIndex + 1]['options'] = this.formTemplate?.masters?.filter(x => x.type == this.formTemplate.controls[currentControlIndex + 1]['configcascade'].key && x?.parent == currentValue)
+      this.http.get("http://localhost:8080/masters/get-by-parent/" + currentValue).subscribe(resp => {
+        this.formTemplate.controls[currentControlIndex + 1]['options'] == resp
+      })
+      // this.formTemplate.controls[currentControlIndex + 1]['options'] = this.formTemplate?.masters?.filter(x => x.type == this.formTemplate.controls[currentControlIndex + 1]['configcascade'].key && x?.parent == currentValue)
 
     });
   }
   //#endregion
   getMinDate(e) {
-    
+
     const minDate = e?.find(x => x.validator == 'min')
     if (minDate) {
       return minDate?.value

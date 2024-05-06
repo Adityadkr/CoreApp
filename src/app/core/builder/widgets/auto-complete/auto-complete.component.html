@@ -1,0 +1,9 @@
+<!-- autocomplete.component.html -->
+
+<div class="input-group">
+    <input type="text" [value]="this.control.value" class="form-control" [formControl]="dummyControl" placeholder="Search...">
+    <input type="hidden" class="form-control" [formControl]="control">
+</div>
+<ul class="list-group" *ngIf="results?.length > 0">
+    <li class="list-group-item" *ngFor="let result of results" (click)="select(result)">{{ result[type] }}</li>
+</ul>

@@ -13,6 +13,7 @@ import { EntityBuilderComponent } from './entity-builder/entity-builder.componen
 import { StepFormComponent } from './step-form/step-form.component';
 import { FormComponent } from './form/form.component';
 import { FormArrayComponent } from './form-array/form-array.component';
+import { AutoCompleteComponent } from './widgets/auto-complete/auto-complete.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { FormArrayComponent } from './form-array/form-array.component';
     EntityBuilderComponent,
     StepFormComponent,
     FormComponent,
-    FormArrayComponent
+    FormArrayComponent,
+    AutoCompleteComponent
   ],
   imports: [
     CommonModule,

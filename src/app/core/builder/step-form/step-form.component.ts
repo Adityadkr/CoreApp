@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { FormComponent } from '../form/form.component';
 
 @Component({
@@ -39,6 +39,7 @@ export class StepFormComponent implements OnInit {
   //@Input() formTemplate: any;
   @Input() data: any = {}
   @Input() patchData: any = {}
+  @Output() onSubmit: any = new EventEmitter<any>();
   activeTab: string = ""
   @ViewChildren('childForm') childForms: QueryList<FormComponent>;
   fields = [
@@ -79,6 +80,7 @@ export class StepFormComponent implements OnInit {
     this.activeTab = this.data.activeTab;
   }
   nextTab() {
+    debugger
     const currentIndex = this.data.tabs.findIndex(tab => tab.id === this.activeTab);
     if (this.getCurrentFormStatus(currentIndex) == "VALID") {
       debugger
@@ -96,7 +98,8 @@ export class StepFormComponent implements OnInit {
 
           //data[element.id] = element.getCurrentFormValue();
         });
-        console.log(JSON.stringify(data));
+        this.onSubmit.emit(data);
+       
       }
 
     }
@@ -115,6 +118,7 @@ export class StepFormComponent implements OnInit {
   }
 
   getCurrentFormStatus(index: number) {
+
     // Check if the index is within the range of childForms
     if (index >= 0 && index < this.childForms.length) {
       const childForm = this.childForms.toArray()[index];

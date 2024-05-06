@@ -23,14 +23,14 @@ export class FormArrayComponent implements OnInit {
   }
 
   ngOnChanges() {
-
+   this.patchData()
   }
   patchData() {
     //debugger
     this.data?.forEach(element => {
       this.add();
     });
-    // this.formArray.patchValue(this.data)
+     this.formArray.patchValue(this.data)
   }
   createFormGroup(field: any) {
 

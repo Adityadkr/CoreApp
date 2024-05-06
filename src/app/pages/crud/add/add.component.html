@@ -1,1 +1,1 @@
-<app-step-form [data]="template"  [patchData]="patchData" ></app-step-form>
+<app-step-form [data]="objModule[module].template"  [patchData]="patchData" (onSubmit)="submit($event)" ></app-step-form>
