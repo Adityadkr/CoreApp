@@ -20,7 +20,12 @@
             <td>{{item?.vesselName}}</td>
             <td>{{item?.callSign}}</td>
             <td>{{item?.type}}</td>
-            <td><button class="btn btn-warning" (click)="goto('edit/'+item.id)">Edit</button></td>
+            <td>
+                <button class="btn btn-warning" (click)="goto('edit/'+item[module+'Id'])">
+                    Edit</button>
+                <button class="btn btn-primary" (click)="goto('view/'+item[module+'Id'])">
+                    View</button>
+            </td>
         </tr>
     </tbody>
 </table>

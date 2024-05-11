@@ -1,2 +1,5 @@
 <!-- <p>edit works!</p> -->
-<app-step-form [data]="objModule[module].template"  [patchData]="patchData" (onSubmit)="submit($event)" ></app-step-form>
+<app-step-form #stepForm [data]="template"  [patchData]="patchData" (onSubmit)="submit($event)" *ngIf="template"  ></app-step-form>
+
+<button class="btn btn-primary" (click)="action(1,'Approve')">Approve</button>
+<button class="btn btn-danger" (click)="action(0,'Reject')">Reject</button>

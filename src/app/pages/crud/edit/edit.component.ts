@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { StepFormComponent } from 'src/app/core/builder/step-form/step-form.component';
 
 @Component({
   selector: 'app-edit',
@@ -8,6 +9,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
   styleUrls: ['./edit.component.css']
 })
 export class EditComponent implements OnInit {
+
 
 
 
@@ -25,7 +27,7 @@ export class EditComponent implements OnInit {
                 "masterKeys": ["TYPE"],
                 "controls": [
                   {
-                    "name": "id",
+                    "name": "vesselId",
                     "type": "hidden",
                     "label": "ID",
                     "value": ""
@@ -82,24 +84,24 @@ export class EditComponent implements OnInit {
                   },
                   {
                     "name": "type",
-                    "type": "dropdown",
+                    "type": "text",
                     "label": "Type",
                     "value": "",
                     "key": "TYPE",
                     "validators": [
                       {
                         "validator": "required",
-                        "errormessage": "Vessel Name is required."
-                      }]
+                        "errormessage": "Type is required."
+                      }],
                     //"behaviour":"",
-                    // "options": [
-                    //   {
-                    //     key: 1, value: "Type 1"
-                    //   },
-                    //   {
-                    //     key: 2, value: "Type 2"
-                    //   }
-                    // ]
+                    "options": [
+                      {
+                        key: 1, value: "Type 1"
+                      },
+                      {
+                        key: 2, value: "Type 2"
+                      }
+                    ]
                   },
                   {
                     "name": "imoNo",
@@ -141,6 +143,7 @@ export class EditComponent implements OnInit {
                     "value": "",
 
                   },
+
                   {
                     "name": "piClubDetails",
                     "type": "array",
@@ -175,14 +178,193 @@ export class EditComponent implements OnInit {
           }
         ]
       }
+    },
+    "voyage": {
+      "template": {
+        "masterId": "voyage",
+        "activeTab": "voyageDetails",
+        "tabs": [
+          {
+            "id": "voyageDetails",
+            "label": "Voyage Details",
+            "content": {
+              "form": {
+                "controls": [
+                  {
+                    "name": "voyageId",
+                    "type": "hidden"
+                  },
+                  {
+                    "name": "vessel",
+                    "type": "hidden"
+                  },
+                  {
+                    "name": "vcn",
+                    "type": "text",
+                    "label": "VCN",
+                    "value": "",
+                    "validators": [
+                      {
+                        "validator": "required",
+                        "errormessage": "VCN is required."
+                      }
+                    ]
+                  },
+                  {
+                    "name": "imoNo",
+                    "type": "imoNo",
+                    "label": "Imo No.",
+                    "value": "",
+                    "validators": [
+                      {
+                        "validator": "required",
+                        "errormessage": "Imo is required."
+                      }
+                    ],
+                    "dependent": "vessel"
+                  },
+                  {
+                    "name": "purposeOfVisit",
+                    "type": "text",
+                    "label": "Purpose of Visit",
+                    "value": "",
+                    "validators": [
+                      {
+                        "validator": "required",
+                        "errormessage": "Purpose of visit is required."
+                      }
+                    ]
+                  },
+                  {
+                    "name": "vesselName",
+                    "type": "text",
+                    "label": "Vessel Name",
+                    "value": "",
+                    "dependent": "vessel",
+                    "validators": [
+                      {
+                        "validator": "required",
+                        "errormessage": "Vessel Name is required."
+                      }
+                    ]
+                  },
+                  {
+                    "name": "voyageNo",
+                    "type": "text",
+                    "label": "Voyage No",
+                    "value": "",
+                    // "dependent": "vessel",
+                    "validators": [
+                      {
+                        "validator": "required",
+                        "errormessage": "Voyage No is required."
+                      }
+                    ]
+                  },
+                  {
+                    "name": "eta",
+                    "type": "date",
+                    "label": "Estimated time of Arrival",
+                    "value": "",
+                    "validators": [
+                      {
+                        "validator": "required",
+                        "errormessage": "Estimated time of Arrival is required."
+                      }
+                    ]
+                  },
+                  // {
+                  //   "name": "imoNo",
+                  //   "type": "entity",
+                  //   "dependent": "vessel"
+                  // },
+                  {
+                    "name": "vesselName",
+                    "type": "entityField",
+                    "dependent": "vessel"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    "berth": {
+      "template": {
+        "masterId": "berth",
+
+        "activeTab": "berthDetails",
+        "tabs": [
+          {
+            "id": "berthDetails",
+            "label": "Berth Details",
+            "content": {
+              "form": {
+                "controls": [
+                  {
+                    "name": "berthId",
+                    "type": "hidden"
+                  },
+                  {
+                    "name": "voyage",
+                    "type": "hidden"
+                  },
+                  {
+                    "name": "vcn",
+                    "type": "vcn",
+                    "dependent": "voyage",
+                    "label": "VCN",
+                    "value": "",
+                  },
+                  {
+                    "name": "berthNo",
+                    "type": "text",
+                    "label": "Berth No.",
+                    "value": "",
+                  },
+
+                  {
+                    "name": "berthName",
+                    "type": "text",
+                    "label": "Berth Name",
+                    "value": "",
+                  },
+                  {
+                    "name": "voyageNo",
+                    "type": "text",
+                    "label": "Voyage No",
+                    "dependent": "voyage"
+                  },
+                  {
+                    "name": "berthCode",
+                    "type": "text",
+                    "label": "Berth Code",
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
     }
   }
   patchData: any = {}
   module: string;
+  formData: any;
+  @ViewChild("stepForm") form: StepFormComponent;
+  template: any;
   constructor(private _http: HttpClient, private _router: Router, private _activatedRoute: ActivatedRoute) { }
   ngOnInit(): void {
     this.module = this._router.url.split('/')[1].toString()
+    this.loadFormByModule();
     this.loadDetails(this._activatedRoute.snapshot.paramMap.get('id'))
+  }
+  loadFormByModule() {
+    this._http.get("http://localhost:8080/form/"+this._activatedRoute.snapshot.data['moduleId']).subscribe((res:any) => {
+      debugger
+      this.template = JSON.parse(res?.jsonData);
+    })
   }
 
   loadDetails(id) {
@@ -196,6 +378,18 @@ export class EditComponent implements OnInit {
       alert("Data Updated Successfully!!");
       this._router.navigateByUrl(this.module + "/list")
     })
+  }
+
+
+  action(e,name) {
+    // alert(JSON.stringify(e))
+    const data = (this.form.getFormData())
+    data["isActive"] = e 
+    this._http.put("http://localhost:8080/" + this.module + '/' + this._activatedRoute.snapshot.paramMap.get('id'), data).subscribe(resp => {
+      alert("Record "+name+" Successfully!!");
+      this._router.navigateByUrl(this.module + "/list")
+    })
+
   }
   goto(e) {
     this._router.navigateByUrl(this.module + "/" + e)

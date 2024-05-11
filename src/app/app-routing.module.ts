@@ -38,11 +38,25 @@ const routes: Routes = [
   {
     path: "vessel/create",
     component: AddComponent,
+    data: {
+      moduleId:18
+    }
 
   },
   {
     path: "vessel/edit/:id",
     component: EditComponent,
+    data: {
+      moduleId:18
+    }
+
+  },
+  {
+    path: "vessel/view/:id",
+    component: EditComponent,
+    data: {
+      moduleId:18
+    }
 
   },
   {
@@ -56,11 +70,25 @@ const routes: Routes = [
   {
     path: "voyage/create",
     component: AddComponent,
+    data: {
+      moduleId:19
+    }
 
   },
   {
     path: "voyage/edit/:id",
     component: EditComponent,
+    data: {
+      moduleId:19
+    }
+
+  },
+  {
+    path: "voyage/view/:id",
+    component: EditComponent,
+    data: {
+      moduleId:19
+    }
 
   },
   {
@@ -68,6 +96,38 @@ const routes: Routes = [
     component: ListComponent,
     data: {
       name: "Voyage", showOnMenu: true,
+    }
+
+  },
+  {
+    path: "berth/create",
+    component: AddComponent,
+    data: {
+      moduleId:20
+    }
+
+  },
+  {
+    path: "berth/edit/:id",
+    component: EditComponent,
+    data: {
+      moduleId:20
+    }
+
+  },
+  {
+    path: "berth/view/:id",
+    component: EditComponent,
+    data: {
+      moduleId:20
+    }
+
+  },
+  {
+    path: "berth/list",
+    component: ListComponent,
+    data: {
+      name: "Berth", showOnMenu: true,
     }
 
   }

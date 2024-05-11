@@ -22,6 +22,7 @@ export class FormComponent implements OnInit {
   @Output() changedControl: any = new EventEmitter<any>();
   @Output() onSubmit: any = new EventEmitter<any>();
   @Output() checkState: any = new EventEmitter<any>();
+  @Output() formInstance: any = new EventEmitter<any>();
   submitted: boolean = false;
   public myForm: FormGroup = this.fb.group({})
   constructor(private fb: FormBuilder, private cdref: ChangeDetectorRef, private http: HttpClient) { }
@@ -239,6 +240,10 @@ export class FormComponent implements OnInit {
     //debugger
     console.log('formasd', changes['formTemplate']?.currentValue);
     this.myForm.patchValue(changes['data']?.currentValue, { emitEvent: false, onlySelf: true })
+    // const dependenFields = this.formTemplate.controls.filter(x => x.hasOwnProperty("dependent"))
+    // dependenFields?.forEach(element => {
+    //   this.myForm.get(element.name).setValidators()
+    // });
     setTimeout(() => {
 
       this.patchValueToCascadedDropDowns();
@@ -316,7 +321,7 @@ export class FormComponent implements OnInit {
     });
     //Binds data to next dependent dropdown
 
-    if (dependentDropdowns[dependentDropdowns.length-1].configcascade?.order > e.configcascade?.order) {
+    if (dependentDropdowns[dependentDropdowns.length - 1].configcascade?.order > e.configcascade?.order) {
       this.http.get("http://localhost:8080/masters/get-by-parent/" + this.myForm.get(e.name)?.value).subscribe(resp => {
         this.formTemplate.controls[currentControlIndex + 1]['options'] = resp
       })
@@ -360,6 +365,10 @@ export class FormComponent implements OnInit {
       return maxDate?.value
     }
     return null
+  }
+
+  getFormInstance() {
+    this.formInstance.emit(this.myForm)
   }
 }
 

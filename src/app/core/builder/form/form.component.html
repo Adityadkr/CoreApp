@@ -1,7 +1,7 @@
 <form [formGroup]="myForm">
     <div class="row">
         <ng-container *ngFor="let control of formTemplate.controls">
-            <div class="form-group" *ngIf="control.type == 'text'"
+            <div class="form-group" *ngIf="control.type == 'text' && !control.hasOwnProperty('behaviour')"
                 [ngClass]="{'col-md-3 mx-4 my-4':columns === 3, 'col-5 mx-3 my-3':columns === 2,' mx-2 my-2':columns === 1}">
 
 
@@ -13,7 +13,7 @@
                 class="form-control" (change)="hasEvent(control?.name,'change') && event(control?.name,'change')"
                 (keyup)="hasEvent(control?.name,'keyup') && event(control?.name,'keyup')"
                 (hover)="hasEvent(control?.name,'hover') && event(control?.name,'hover')"> -->
-                <input type="text" [formControlName]="control?.name" class="form-control">
+                <input type="text" [formControlName]="control?.name" class="form-control" >
 
                 <div class="text-danger" *ngIf="checkError(control?.name) && submitted">
                     <div *ngFor="let error of control?.validators">
@@ -199,11 +199,11 @@
 
             <div class="form-group"
                 [ngClass]="{'col-md-3 mx-4 my-4':columns === 3, 'col-5 mx-3 my-3':columns === 2,' mx-2 my-2':columns === 1}"
-                *ngIf="['imoNo','vcn'].includes(control?.type)"
+                *ngIf="control?.behaviour == 'popup'"
                 [ngClass]="{'col-md-3 mx-4 my-4':columns === 3, 'col-5 mx-3 my-3':columns === 2,' mx-2 my-2':columns === 1}">
                 <label>{{control?.label}}</label>
                 <app-auto-complete [type]="control?.name"
-                    [control]="this.myForm.get(control?.name)"></app-auto-complete>
+                    [control]="this.myForm.get(control?.name)" [dependent]="control?.dependent"></app-auto-complete>
                 <div class="text-danger" *ngIf="checkError(control?.name) && submitted">
                     <div *ngFor="let error of control?.validators">
                         <span

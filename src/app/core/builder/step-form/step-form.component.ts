@@ -66,15 +66,17 @@ export class StepFormComponent implements OnInit {
       ]
     }
   ]
+  @Output() formData: any = new EventEmitter<any>();
 
 
   constructor() { }
 
   ngOnInit(): void {
     this.loadForm();
-    setTimeout(() => {
-      //  this.
-    }, 0);
+    
+  }
+  ngAfterViewInit(){
+  //  this.getFormData();
   }
   loadForm() {
     this.activeTab = this.data.activeTab;
@@ -94,12 +96,12 @@ export class StepFormComponent implements OnInit {
         const childForm = this.childForms.toArray()
         childForm.forEach(element => {
           const currentData = element.getCurrentFormValue();
-          data = Object.assign({}, data,currentData);
+          data = Object.assign({}, data, currentData);
 
           //data[element.id] = element.getCurrentFormValue();
         });
         this.onSubmit.emit(data);
-       
+
       }
 
     }
@@ -134,5 +136,17 @@ export class StepFormComponent implements OnInit {
       return false;
     }
     return true;
+  }
+  getFormData() {
+    let data = {}
+    const childForm = this.childForms.toArray()
+    childForm.forEach(element => {
+      const currentData = element.getCurrentFormValue();
+      data = Object.assign({}, data, currentData);
+
+      //data[element.id] = element.getCurrentFormValue();
+    });
+    return data;
+    //this.formData.emit(data)
   }
 }

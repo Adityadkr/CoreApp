@@ -1,1 +1,5 @@
-<app-step-form [data]="objModule[module].template"  [patchData]="patchData" (onSubmit)="submit($event)" ></app-step-form>
+<app-step-form
+[data]="template" 
+[patchData]="patchData" 
+(onSubmit)="submit($event)"
+*ngIf="template" ></app-step-form>
