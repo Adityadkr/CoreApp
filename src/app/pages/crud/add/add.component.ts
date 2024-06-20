@@ -353,7 +353,8 @@ export class AddComponent implements OnInit {
 
   ngOnInit(): void {
     this.module = this._router.url.split('/')[1].toString()
-    this.loadFormByModule()
+    this.template = this.objModule[this.module].template
+   // this.loadFormByModule()
     console.log(this.objModule[this.module].template)
 
   }
